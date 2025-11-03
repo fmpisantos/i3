@@ -9,7 +9,8 @@ mkdir -p "$LOCK_DIR"
 check_and_launch() {
     local workspace=$1
     local check_class=$2
-    local launch_cmd=$3
+    local check_title=$3
+    local launch_cmd=$4
     local lock_file="$LOCK_DIR/$workspace.lock"
     
     # Get current workspace
@@ -31,13 +32,25 @@ check_and_launch() {
     fi
     
     # Check if any window with the specified class exists on this workspace
-    window_count=$(i3-msg -t get_tree | jq -r "
-        .. | 
-        select(.type? == \"workspace\" and .name? == \"$workspace\") | 
-        .. | 
-        select(.window_properties?.class? != null) | 
-        select(.window_properties.class | test(\"$check_class\"; \"i\")) | 
-        .id" | wc -l)
+    # If check_title is provided, also match on title
+    if [ -n "$check_title" ]; then
+        window_count=$(i3-msg -t get_tree | jq -r "
+            .. | 
+            select(.type? == \"workspace\" and .name? == \"$workspace\") | 
+            .. | 
+            select(.window_properties?.class? != null) | 
+            select(.window_properties.class | test(\"$check_class\"; \"i\")) |
+            select(.name? // \"\" | test(\"$check_title\"; \"i\")) |
+            .id" | wc -l)
+    else
+        window_count=$(i3-msg -t get_tree | jq -r "
+            .. | 
+            select(.type? == \"workspace\" and .name? == \"$workspace\") | 
+            .. | 
+            select(.window_properties?.class? != null) | 
+            select(.window_properties.class | test(\"$check_class\"; \"i\")) | 
+            .id" | wc -l)
+    fi
     
     # If no matching window found, launch the application
     if [ "$window_count" -eq 0 ]; then
@@ -69,23 +82,23 @@ i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
     case "$workspace" in
         "T")
             # Terminal workspace - check for alacritty
-            check_and_launch "T" "alacritty" "alacritty"
+            check_and_launch "T" "alacritty" "" "alacritty"
             ;;
         "B")
             # Browser workspace - check for Edge
-            check_and_launch "B" "microsoft-edge" "microsoft-edge"
+            check_and_launch "B" "microsoft-edge" "" "microsoft-edge"
             ;;
         "P")
             # Postman workspace
-            check_and_launch "P" "Postman" "postman"
+            check_and_launch "P" "Postman" "" "postman"
             ;;
         "3")
-            # Outlook on Edge workspace
-            check_and_launch "3" "microsoft-edge.*outlook" "microsoft-edge --app=https://outlook.office.com"
+            # Outlook on Edge workspace - check both class AND title
+            check_and_launch "3" "microsoft-edge" "Outlook|Mail" "microsoft-edge --app=https://outlook.office.com"
             ;;
         "4")
-            # Teams on Edge workspace
-            check_and_launch "4" "microsoft-edge.*teams" "microsoft-edge --app=https://teams.microsoft.com"
+            # Teams on Edge workspace - check both class AND title
+            check_and_launch "4" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
             ;;
     esac
 done
