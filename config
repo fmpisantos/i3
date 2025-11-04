@@ -12,6 +12,9 @@ floating_modifier $mod
 
 bindsym $mod+Return exec alacritty
 
+# bindsym $mod+Shift+4 exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
+bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui -c
+
 bindsym Mod4+q kill
 
 bindsym Mod4+space exec rofi -show run
