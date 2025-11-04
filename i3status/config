@@ -3,10 +3,16 @@ general {
     interval = 5
 }
 
+order += "read_file keyboard_layout"
 order += "wireless _first_"
 order += "memory"
 order += "battery all"
 order += "tztime local"
+
+read_file keyboard_layout {
+    path = "/tmp/current_layout"
+    format = "⌨ %content"
+}
 
 wireless _first_ {
     format_up = "WiFi: %essid %quality"

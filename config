@@ -1,6 +1,11 @@
 set $mod Mod1
 exec --no-startup-id xrandr --output DP-1-1 --primary --auto --left-of eDP-1 --auto
 
+exec_always --no-startup-id killall ibus-daemon 2>/dev/null
+exec_always --no-startup-id setxkbmap us swapped
+exec_always --no-startup-id echo "EN" > /tmp/current_layout
+bindsym Ctrl+space exec --no-startup-id ~/.config/i3/toggle-layout.sh
+
 font pango:monospace 8
 
 floating_modifier $mod
@@ -151,6 +156,7 @@ exec --no-startup-id /opt/zscaler/scripts/zstray_desktop.sh %u
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id volumeicon
+
 bindsym Mod4+l exec i3lock -c 000000
 
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
