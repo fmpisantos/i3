@@ -147,6 +147,7 @@ for_window [class=".*"] border pixel 1
 
 exec --no-startup-id intune-portal
 exec --no-startup-id ~/.config/i3/workspace-app-launcher.sh
+exec --no-startup-id /opt/zscaler/scripts/zstray_desktop.sh %u
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id volumeicon
