@@ -12,7 +12,6 @@ check_and_launch() {
     local check_title=$3
     local launch_cmd=$4
     local lock_file="$LOCK_DIR/$workspace.lock"
-    
     # Get current workspace
     current_ws=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused==true).name')
     
@@ -78,7 +77,7 @@ i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
     
     # Get the workspace that was focused
     workspace=$(echo "$event" | jq -r '.current.name')
-    
+
     case "$workspace" in
         "T")
             # Terminal workspace - check for alacritty
@@ -99,6 +98,14 @@ i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
         "4")
             # Teams on Edge workspace - check both class AND title
             check_and_launch "4" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
+            ;;
+        "G")
+            # NokiaGPT on Edge workspace - check both class AND title
+            check_and_launch "G" "microsoft-edge" "NokiaGPT" "microsoft-edge --app=https://gpt.nokia.com"
+            ;;
+        "6")
+            # NokiaGPT on Edge workspace - check both class AND title
+            check_and_launch "6" "jetbrains-idea" "" "jetbrains-idea"
             ;;
     esac
 done
