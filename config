@@ -1,5 +1,9 @@
 set $mod Mod1
-exec --no-startup-id xrandr --output DP-1-1 --primary --auto --left-of eDP-1 --auto
+
+exec --no-startup-id ~/.config/i3/monitor-setup.sh
+
+# exec --no-startup-id xrandr --output DP-1-1 --primary --auto --left-of eDP-1 --auto
+#xrandr --output eDP-1 --auto --primary
 
 exec --no-startup-id copyq
  
