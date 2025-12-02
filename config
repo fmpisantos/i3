@@ -1,18 +1,21 @@
 set $mod Mod1
 
 exec --no-startup-id ~/.config/i3/monitor-setup.sh
-
-# exec --no-startup-id xrandr --output DP-1-1 --primary --auto --left-of eDP-1 --auto
-#xrandr --output eDP-1 --auto --primary
+exec_always --no-startup-id picom
 
 exec --no-startup-id copyq
+
+bindsym Ctrl+Shift+v exec copyq toggle
  
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
 exec_always --no-startup-id killall ibus-daemon 2>/dev/null
 exec_always --no-startup-id setxkbmap us swapped
 exec_always --no-startup-id echo "EN" > /tmp/current_layout
-bindsym Ctrl+space exec --no-startup-id ~/.config/i3/toggle-layout.sh
 
-bindsym Ctrl+Shift+v exec copyq toggle
+exec_always --no-startup-id ~/.config/i3/set-wallpaper.sh
+
+bindsym Ctrl+space exec --no-startup-id ~/.config/i3/toggle-layout.sh
 
 font pango:monospace 8
 
@@ -25,7 +28,9 @@ bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui -c
 
 bindsym Mod4+q kill
 
-bindsym Mod4+space exec rofi -show drun
+# bindsym Mod4+space exec rofi -show drun
+bindsym Mod4+space exec --no-startup-id "rofi -show drun -theme ~/.config/rofi/drun.rasi"
+
 
 # Change focus 
 bindsym $mod+Control+h focus left
@@ -144,6 +149,7 @@ bindsym $mod+Shift+period resize shrink width 50 px or 50 ppt
 bindsym $mod+Shift+comma resize grow width 50 px or 50 ppt
 
 # Gaps (similar to AeroSpace gaps)
+# gaps top 30
 # gaps inner 6
 # gaps outer 6
 
@@ -170,8 +176,8 @@ client.unfocused        #333333 #222222 #888888 #292d2e   #222222
 client.urgent           #2f343a #900000 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
-bar {
-    position top
-    status_command i3status
-    tray_output primary
-}
+# bar {
+#     position top
+#     status_command i3status
+#     tray_output primary
+# }
