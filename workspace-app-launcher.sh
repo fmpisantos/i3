@@ -91,17 +91,21 @@ i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
             # Postman workspace
             check_and_launch "P" "Postman" "" "postman"
             ;;
-        "3")
-            # Outlook on Edge workspace - check both class AND title
-            check_and_launch "3" "microsoft-edge" "Outlook|Mail" "microsoft-edge --app=https://outlook.office.com"
-            ;;
         "4")
+            # Outlook on Edge workspace - check both class AND title
+            check_and_launch "4" "microsoft-edge" "Outlook|Mail" "microsoft-edge --app=https://outlook.office.com"
+            ;;
+        "2")
             # Teams on Edge workspace - check both class AND title
-            check_and_launch "4" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
+            check_and_launch "2" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
             ;;
         "G")
             # NokiaGPT on Edge workspace - check both class AND title
             check_and_launch "G" "microsoft-edge" "NokiaGPT" "microsoft-edge --app=https://gpt.nokia.com"
+            ;;
+        "3")
+            # Apple reminders on Edge workspace - check both class AND title
+            check_and_launch "3" "microsoft-edge" "Reminders" "microsoft-edge --app=https://www.icloud.com/reminders"
             ;;
         "6")
             # NokiaGPT on Edge workspace - check both class AND title
