@@ -12,13 +12,6 @@ check_and_launch() {
     local check_title=$3
     local launch_cmd=$4
     local lock_file="$LOCK_DIR/$workspace.lock"
-    # Get current workspace
-    current_ws=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused==true).name')
-    
-    # Only proceed if we're on the target workspace
-    if [ "$current_ws" != "$workspace" ]; then
-        return
-    fi
     
     # Check if we have a recent lock (launch in progress)
     if [ -f "$lock_file" ]; then
@@ -31,12 +24,12 @@ check_and_launch() {
     fi
     
     # Check if any window with the specified class exists on this workspace
-    # If check_title is provided, also match on title
+    # Use recurse_down to properly traverse only children of the workspace
     if [ -n "$check_title" ]; then
         window_count=$(i3-msg -t get_tree | jq -r "
             .. | 
-            select(.type? == \"workspace\" and .name? == \"$workspace\") | 
-            .. | 
+            select(.type? == \"workspace\" and .name? == \"$workspace\") |
+            recurse(.nodes[], .floating_nodes[]) |
             select(.window_properties?.class? != null) | 
             select(.window_properties.class | test(\"$check_class\"; \"i\")) |
             select(.name? // \"\" | test(\"$check_title\"; \"i\")) |
@@ -44,8 +37,8 @@ check_and_launch() {
     else
         window_count=$(i3-msg -t get_tree | jq -r "
             .. | 
-            select(.type? == \"workspace\" and .name? == \"$workspace\") | 
-            .. | 
+            select(.type? == \"workspace\" and .name? == \"$workspace\") |
+            recurse(.nodes[], .floating_nodes[]) |
             select(.window_properties?.class? != null) | 
             select(.window_properties.class | test(\"$check_class\"; \"i\")) | 
             .id" | wc -l)
@@ -56,8 +49,9 @@ check_and_launch() {
         # Create lock file
         touch "$lock_file"
         
-        # Launch app in background
-        eval "$launch_cmd" &
+        # Launch app using i3-msg exec to ensure it opens on the current workspace
+        # Use exec --no-startup-id to avoid focus stealing issues
+        i3-msg "exec --no-startup-id $launch_cmd" &
         
         # Remove lock after delay (in background)
         (sleep 5 && rm -f "$lock_file") &
@@ -108,8 +102,12 @@ i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
             check_and_launch "3" "microsoft-edge" "Reminders" "microsoft-edge --app=https://www.icloud.com/reminders"
             ;;
         "6")
-            # NokiaGPT on Edge workspace - check both class AND title
+            # IntelliJ IDEA on workspace 6
             check_and_launch "6" "jetbrains-idea" "" "jetbrains-idea"
+            ;;
+        "5")
+            # Google calendar on Edge
+            check_and_launch "5" "microsoft-edge" "Calendar" "microsoft-edge --app=https://calendar.google.com/calendar/u/0"
             ;;
     esac
 done

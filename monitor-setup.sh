@@ -11,7 +11,7 @@ RESOLUTIONS=(
 )
 
 # Set to -1 for auto-detection, or 0-4 to force a specific resolution from the array above
-FORCE_RESOLUTION_INDEX=2
+FORCE_RESOLUTION_INDEX=-1
 
 # Restart all Thunderbolt (DP) and HDMI ports to force re-detection
 echo "Restarting external display ports..."
