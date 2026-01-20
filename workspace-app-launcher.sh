@@ -61,53 +61,59 @@ check_and_launch() {
 # Clean up lock files on exit
 trap "rm -f $LOCK_DIR/*.lock" EXIT
 
-# Listen to workspace events
-i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
-    # Only process focus changes
-    change=$(echo "$event" | jq -r '.change')
-    if [ "$change" != "focus" ]; then
-        continue
-    fi
-    
-    # Get the workspace that was focused
-    workspace=$(echo "$event" | jq -r '.current.name')
+# Main loop - restarts subscription if it disconnects (e.g., after i3 restart)
+while true; do
+    # Listen to workspace events
+    i3-msg -t subscribe -m '["workspace"]' | while read -r event; do
+        # Only process focus changes
+        change=$(echo "$event" | jq -r '.change')
+        if [ "$change" != "focus" ]; then
+            continue
+        fi
+        
+        # Get the workspace that was focused
+        workspace=$(echo "$event" | jq -r '.current.name')
 
-    case "$workspace" in
-        "T")
-            # Terminal workspace - check for alacritty
-            check_and_launch "T" "alacritty" "" "alacritty"
-            ;;
-        "B")
-            # Browser workspace - check for Edge
-            check_and_launch "B" "microsoft-edge" "" "microsoft-edge"
-            ;;
-        "P")
-            # Postman workspace
-            check_and_launch "P" "Postman" "" "postman"
-            ;;
-        "4")
-            # Outlook on Edge workspace - check both class AND title
-            check_and_launch "4" "microsoft-edge" "Outlook|Mail" "microsoft-edge --app=https://outlook.office.com"
-            ;;
-        "2")
-            # Teams on Edge workspace - check both class AND title
-            check_and_launch "2" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
-            ;;
-        "G")
-            # NokiaGPT on Edge workspace - check both class AND title
-            check_and_launch "G" "microsoft-edge" "NokiaGPT" "microsoft-edge --app=https://gpt.nokia.com"
-            ;;
-        "3")
-            # Apple reminders on Edge workspace - check both class AND title
-            check_and_launch "3" "microsoft-edge" "Reminders" "microsoft-edge --app=https://www.icloud.com/reminders"
-            ;;
-        "6")
-            # IntelliJ IDEA on workspace 6
-            check_and_launch "6" "jetbrains-idea" "" "jetbrains-idea"
-            ;;
-        "5")
-            # Google calendar on Edge
-            check_and_launch "5" "microsoft-edge" "Calendar" "microsoft-edge --app=https://calendar.google.com/calendar/u/0"
-            ;;
-    esac
+        case "$workspace" in
+            "T")
+                # Terminal workspace - check for alacritty
+                check_and_launch "T" "alacritty" "" "alacritty"
+                ;;
+            "B")
+                # Browser workspace - check for Edge
+                check_and_launch "B" "microsoft-edge" "" "microsoft-edge"
+                ;;
+            "P")
+                # Postman workspace
+                check_and_launch "P" "Postman" "" "postman"
+                ;;
+            "4")
+                # Outlook on Edge workspace - check both class AND title
+                check_and_launch "4" "microsoft-edge" "Outlook|Mail" "microsoft-edge --app=https://outlook.office.com"
+                ;;
+            "2")
+                # Teams on Edge workspace - check both class AND title
+                check_and_launch "2" "microsoft-edge" "Teams|Microsoft Teams" "microsoft-edge --app=https://teams.microsoft.com"
+                ;;
+            "G")
+                # NokiaGPT on Edge workspace - check both class AND title
+                check_and_launch "G" "microsoft-edge" "NokiaGPT" "microsoft-edge --app=https://gpt.nokia.com"
+                ;;
+            "3")
+                # Apple reminders on Edge workspace - check both class AND title
+                check_and_launch "3" "microsoft-edge" "Reminders" "microsoft-edge --app=https://www.icloud.com/reminders"
+                ;;
+            "6")
+                # IntelliJ IDEA on workspace 6
+                check_and_launch "6" "jetbrains-idea" "" "jetbrains-idea"
+                ;;
+            "5")
+                # Google calendar on Edge
+                check_and_launch "5" "microsoft-edge" "Calendar" "microsoft-edge --app=https://calendar.google.com/calendar/u/0"
+                ;;
+        esac
+    done
+
+    # Subscription disconnected (e.g., i3 restart), reconnect after delay
+    sleep 2
 done
