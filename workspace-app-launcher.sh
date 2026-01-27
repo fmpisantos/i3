@@ -105,11 +105,12 @@ while true; do
                 ;;
             "6")
                 # IntelliJ IDEA on workspace 6
-                check_and_launch "6" "jetbrains-idea" "" "jetbrains-idea"
+                check_and_launch "6" "jetbrains-idea" "" "/home/filipe/snap/idea-IU-252.27397.103/bin/idea.sh"
                 ;;
             "5")
-                # Google calendar on Edge
-                check_and_launch "5" "microsoft-edge" "Calendar" "microsoft-edge --app=https://calendar.google.com/calendar/u/0"
+                # Google and Outlook calendars on Edge
+                    (check_and_launch "5" "microsoft-edge" "Calendar" "microsoft-edge --app=https://calendar.google.com/calendar/u/0" &)
+                    (check_and_launch "5" "microsoft-edge" "Outlook" "microsoft-edge --app=https://outlook.office.com/calendar/view/workweek" &)
                 ;;
         esac
     done
