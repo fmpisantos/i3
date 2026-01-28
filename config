@@ -1,5 +1,6 @@
 set $mod Mod1
 
+exec --no-startup-id ~/.config/i3/disable-touchpad.sh
 exec --no-startup-id ~/.config/i3/monitor-setup.sh
 exec_always --no-startup-id picom
 

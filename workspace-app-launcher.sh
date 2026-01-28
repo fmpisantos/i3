@@ -105,7 +105,7 @@ while true; do
                 ;;
             "6")
                 # IntelliJ IDEA on workspace 6
-                check_and_launch "6" "jetbrains-idea" "" "/home/filipe/snap/idea-IU-252.27397.103/bin/idea.sh"
+                check_and_launch "6" "jetbrains-idea" "" "/home/filipe/snap/idea-IU/current/bin/idea.sh"
                 ;;
             "5")
                 # Google and Outlook calendars on Edge
